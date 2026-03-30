@@ -75,7 +75,7 @@ export class AuthService {
 		});
 
 		const user = await this.prisma.user.findUnique({
-		  where: { id: decoded.sub },
+		  where: { id: Number(decoded.sub) },
 		});
 
 		if (!user) throw new UnauthorizedException();
