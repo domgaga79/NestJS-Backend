@@ -17,6 +17,7 @@ model User {
   updatedAt DateTime @default(now()) @updatedAt
   orders    Order[]
   hashedRt        String? // refresh token hash
+  refreshToken String?
 }
 
 model Customer {

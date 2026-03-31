@@ -37,9 +37,47 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
-  async refresh(@Body() body: { refresh_token: string }) {
-    return this.authService.refresh(body.refresh_token);
+  async refresh(@Body() body: { refreshToken: string }) {
+    const decoded = this.jwtService.verify(body.refreshToken);
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: decoded.sub },
+    });
+
+    if (!user || !user.refreshToken) {
+      throw new UnauthorizedException();
+    }
+
+    const isValid = await bcrypt.compare(
+      body.refreshToken,
+      user.refreshToken,
+    );
+
+    if (!isValid) {
+      throw new UnauthorizedException();
+    }
+
+    return this.login(user);
   }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')

@@ -64,7 +64,16 @@ export class AuthService {
 
   // =========================
   // REFRESH TOKEN
-  // =========================
+  // =========================  
+    async setRefreshToken(userId: string, refreshToken: string) {
+      const hash = await bcrypt.hash(refreshToken, 10);
+
+        await this.prisma.user.update({
+          where: { id: userId },
+          data: { refreshToken: hash },
+        });
+    }    
+  
 	async refresh(token: string) {
 	  try {
 		const decoded = this.jwtService.verify<{
