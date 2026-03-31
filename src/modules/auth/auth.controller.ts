@@ -3,6 +3,10 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import type { Request } from 'express';
 import { Public } from '../../common/decorators/public.decorator';
+import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'prisma/prisma.service';
+import { UnauthorizedException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 interface RequestWithUser extends Request {
   user: {
@@ -15,7 +19,10 @@ interface RequestWithUser extends Request {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+    private readonly prisma: PrismaService)
+  {}
 
   @Public()
   @Post('register')
@@ -58,26 +65,7 @@ export class AuthController {
     }
 
     return this.login(user);
-  }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  }  
 
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')

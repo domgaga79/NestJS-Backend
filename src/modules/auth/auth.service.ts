@@ -69,7 +69,7 @@ export class AuthService {
       const hash = await bcrypt.hash(refreshToken, 10);
 
         await this.prisma.user.update({
-          where: { id: userId },
+          where: { id: Number(userId) },
           data: { refreshToken: hash },
         });
     }    
